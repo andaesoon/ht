@@ -62,7 +62,7 @@
                 <span>기록 시스템 연결됨</span>
             </div>
             <input type="text" id="script-url" 
-                   value="https://script.google.com/macros/s/AKfycbw-5PI5nQDW0udknXyeJCIHsYI97TC_WU3-NCpFBIPkVu4OzJ5bUkFrQZ6kTbkneAem/exec"
+                   value="https://script.google.com/macros/s/AKfycbz7P7ORsIhO_bphJf3POExTIIqphCDIiAIZ4KmhBSeWUXPShI2afceST8ObsrGEGqsc/exec"
                    class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
         </div>
 
