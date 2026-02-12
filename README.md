@@ -88,7 +88,7 @@
                 <input type="file" id="file-input" accept="image/*" class="hidden">
 
                 <!-- 분석 버튼 -->
-                <button id="analyze-btn" disabled class="w-full bg-slate-900 text-white font-black py-5 rounded-[1.5rem] shadow-xl hover:bg-slate-800 disabled:bg-slate-200 transition-all flex items-center justify-center gap-3 text-lg">
+                <button id="analyze-btn" disabled class="w-full bg-slate-900 text-white font-bold py-5 rounded-[1.5rem] shadow-xl hover:bg-slate-800 disabled:bg-slate-200 transition-all flex items-center justify-center gap-3 text-lg">
                     <i class="fas fa-wand-magic-sparkles"></i> 분석 및 대장 기록
                 </button>
 
@@ -126,8 +126,8 @@
     </div>
 
     <script>
-        // API 설정
-        const apiKey = ""; // API 키는 런타임에 자동으로 연동됩니다.
+        // API 설정: GitHub 등 외부 호스팅 시에는 반드시 API 키가 포함되어야 합니다.
+        const apiKey = "AIzaSyC61yO3g7qVSjpaEL_vrVVdziks_kANDRc"; 
         const model = "gemini-2.5-flash-preview-09-2025";
 
         const fileInput = document.getElementById('file-input');
@@ -216,6 +216,12 @@
                 });
 
                 const aiResult = await response.json();
+                
+                // 에러 처리 추가
+                if (aiResult.error) {
+                    throw new Error(aiResult.error.message);
+                }
+
                 const content = aiResult.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
                 const data = JSON.parse(content);
 
@@ -224,7 +230,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert("분석 또는 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                alert("분석 중 오류가 발생했습니다: " + err.message + "\n(API 키가 유효한지 확인해주세요)");
             } finally {
                 loading.classList.add('hidden');
                 analyzeBtn.disabled = false;
@@ -237,7 +243,7 @@
                 const div = document.createElement('div');
                 div.className = "result-card p-5 bg-slate-50 border border-slate-100 rounded-[1.5rem] flex items-center gap-5 shadow-sm";
                 div.innerHTML = `
-                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-4xl shrink-0">
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-3xl shrink-0">
                         ${item.emoji || '📦'}
                     </div>
                     <div class="flex-1 min-w-0">
@@ -264,19 +270,6 @@
                 syncBadge.classList.remove('hidden');
             } catch (err) {
                 console.warn("시트 전송 경고:", err);
-            }
-        }
-
-        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const res = await fetch(url, options);
-                    if (res.ok) return await res.json();
-                } catch (e) {
-                    if (i === retries - 1) throw e;
-                }
-                await new Promise(r => setTimeout(r, delay));
-                delay *= 2;
             }
         }
     </script>
